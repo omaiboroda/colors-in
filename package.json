@@ -1,0 +1,40 @@
+{
+  "name": "colors-in",
+  "author": "Oles Maiboroda",
+  "version": "0.0.1",
+  "description": "Extract colors from your sources",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omaiboroda/colors-in.git"
+  },
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "eslint src",
+    "prepublish": "npm test"
+  },
+  "bin": {
+    "colors-in": "./src/index.js"
+  },
+  "preferGlobal": true,
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.11.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.0",
+    "jest": "^23.6.0",
+    "prettier": "^1.15.3"
+  },
+  "dependencies": {
+    "walk": "^2.3.14",
+    "yargs": "^12.0.5"
+  }
+}
