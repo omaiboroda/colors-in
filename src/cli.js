@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const walk = require("walk");
 const { argv } = require("yargs");
-const { findColors, makeStats } = require("./index");
+const { findColors, sort } = require("./index");
 
 const [pathArg] = argv._;
 const { exclude } = argv;
@@ -36,7 +36,7 @@ const destination = path.join(process.cwd(), pathArg);
   });
 
   walker.on("end", () => {
-    const stats = makeStats(colors);
+    const stats = sort(colors);
     console.log(`Colors found: ${stats.length}: \n`, stats);
   });
 })(destination);

@@ -20,7 +20,7 @@ const findColors = (str, colorPatterns = patterns) =>
     return [...prev, ...res];
   }, []);
 
-const makeStats = colors => {
+const sort = colors => {
   // { "#454b54": 1, "#000000": 3, ... }
   const count = colors.reduce((sum, color) => {
     color = color.toLowerCase();
@@ -36,5 +36,5 @@ const makeStats = colors => {
 
 module.exports = {
   findColors,
-  makeStats
+  sort
 };
