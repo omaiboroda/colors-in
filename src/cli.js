@@ -4,14 +4,14 @@ const fs = require("fs");
 const path = require("path");
 const walk = require("walk");
 const { argv } = require("yargs");
-const { lookInFile, makeStats } = require("./index");
+const { findColors, makeStats } = require("./index");
 
 const [pathArg] = argv._;
 const { exclude } = argv;
 
 const destination = path.join(process.cwd(), pathArg);
 
-const lookInFolder = pathToDirectory => {
+(pathToDirectory => {
   const walker = walk.walk(pathToDirectory);
   let colors = [];
 
@@ -23,8 +23,8 @@ const lookInFolder = pathToDirectory => {
         return;
       }
     }
-    fs.readFile(fileStats.name, async () => {
-      const colorsInFile = await lookInFile(path.join(root, fileStats.name));
+    fs.readFile(path.join(root, fileStats.name), "utf8", (err, contents) => {
+      const colorsInFile = findColors(contents);
       colors = [...colors, ...colorsInFile];
       next();
     });
@@ -39,6 +39,4 @@ const lookInFolder = pathToDirectory => {
     const stats = makeStats(colors);
     console.log(`Colors found: ${stats.length}: \n`, stats);
   });
-};
-
-lookInFolder(destination);
+})(destination);
