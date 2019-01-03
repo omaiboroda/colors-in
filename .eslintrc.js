@@ -5,5 +5,8 @@ module.exports = {
     "no-param-reassign": 0,
     "no-console": 0,
     "prettier/prettier": "error"
+  },
+  env: {
+    jest: true
   }
 };

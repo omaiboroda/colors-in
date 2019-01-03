@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const walk = require("walk");
 const { argv } = require("yargs");
+const chalk = require("chalk");
 const { findColors, sort } = require("./index");
 
 const [pathArg] = argv._;
@@ -37,6 +38,14 @@ const destination = path.join(process.cwd(), pathArg);
 
   walker.on("end", () => {
     const stats = sort(colors);
-    console.log(`Colors found: ${stats.length}: \n`, stats);
+    console.log(`Colors found: ${stats.length}:`);
+    stats.forEach(stat => {
+      console.log(
+        " ",
+        chalk`${chalk.bgHex(stat[0])("   ")}`,
+        chalk.green(stat[0]),
+        chalk.yellow(stat[1])
+      );
+    });
   });
 })(destination);
