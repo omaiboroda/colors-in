@@ -1,4 +1,4 @@
-Extact colors from your source files
+Extract colors from your source files
 
 #### Installation
 
@@ -18,11 +18,11 @@ Extact colors from your source files
       [ '#cdcfd4', 1 ],
       [ '#83868d', 1 ] ]
 
-You can exlude in some files with `--exclude` option:
+You can exclude some files with `--exclude` option:
 
-    $ colors-in src/ --exlude .snap
+    $ colors-in src/ --exclude snap,svg
 
-Regular expresions, used for colors lookup:
+Regular expressions, used for colors lookup:
 
     {
       hex: /(#(?:[0-9a-fA-F]{3}){1,2})/gm,

@@ -62,7 +62,7 @@ const lookInFolder = pathToDirectory => {
 
   walker.on("file", (root, fileStats, next) => {
     if (exclude) {
-      const excludeRegex = new RegExp(exclude);
+      const excludeRegex = new RegExp(exclude.split(",").join("|"));
       if (excludeRegex.test(fileStats.name)) {
         next();
         return;
