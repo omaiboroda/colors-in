@@ -1,14 +1,4 @@
-#!/usr/bin/env node
-
 const fs = require("fs");
-const path = require("path");
-const walk = require("walk");
-const { argv } = require("yargs");
-
-const [pathArg] = argv._;
-const { exclude } = argv;
-
-const destination = path.join(process.cwd(), pathArg);
 
 const patterns = {
   hex: /(#(?:[0-9a-fA-F]{3}){1,2})/gm,
@@ -56,34 +46,7 @@ const makeStats = colors => {
   return sorted;
 };
 
-const lookInFolder = pathToDirectory => {
-  const walker = walk.walk(pathToDirectory);
-  let colors = [];
-
-  walker.on("file", (root, fileStats, next) => {
-    if (exclude) {
-      const excludeRegex = new RegExp(exclude.split(",").join("|"));
-      if (excludeRegex.test(fileStats.name)) {
-        next();
-        return;
-      }
-    }
-    fs.readFile(fileStats.name, async () => {
-      const colorsInFile = await lookInFile(path.join(root, fileStats.name));
-      colors = [...colors, ...colorsInFile];
-      next();
-    });
-  });
-
-  walker.on("errors", (root, nodeStatsArray, next) => {
-    console.error(nodeStatsArray);
-    next();
-  });
-
-  walker.on("end", () => {
-    const stats = makeStats(colors);
-    console.log(`Colors found: ${stats.length}: \n`, stats);
-  });
+module.exports = {
+  lookInFile,
+  makeStats
 };
-
-lookInFolder(destination);

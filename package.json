@@ -13,7 +13,7 @@
     "prepublish": "npm test"
   },
   "bin": {
-    "colors-in": "./src/index.js"
+    "colors-in": "./src/cli.js"
   },
   "preferGlobal": true,
   "license": "ISC",
