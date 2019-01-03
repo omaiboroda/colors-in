@@ -1,5 +1,5 @@
 const patterns = {
-  hex: /(#(?:[0-9a-fA-F]{3}){1,2})/gm,
+  hex: /#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})\b/gm,
   rgb: /rgb\(\s*(-?\d+|-?\d*\.\d+(?=%))(%?)\s*,\s*(-?\d+|-?\d*\.\d+(?=%))(\2)\s*,\s*(-?\d+|-?\d*\.\d+(?=%))(\2)\s*\)/gm,
   rgba: /rgba\(\s*(-?\d+|-?\d*\.\d+(?=%))(%?)\s*,\s*(-?\d+|-?\d*\.\d+(?=%))(\2)\s*,\s*(-?\d+|-?\d*\.\d+(?=%))(\2)\s*,\s*(-?\d+|-?\d*.\d+)\s*\)/gm
 };
@@ -16,7 +16,7 @@ const iterate = (regexp, str) => {
 
 const findColors = (str, colorPatterns = patterns) =>
   Object.keys(colorPatterns).reduce((prev, cur) => {
-    const res = iterate(colorPatterns[cur], str);
+    const res = iterate(colorPatterns[cur], str.toLowerCase());
     return [...prev, ...res];
   }, []);
 

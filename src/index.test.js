@@ -3,8 +3,8 @@ const { findColors, sort } = require("./index");
 describe("Color extracting behavior", () => {
   it("Can find colors in a string", () => {
     const str =
-      "#ff #ffffff #asdf rgba(345,543,3455) rgb(1,1,1) rgba(2,2,3, 0.7";
-    const expected = ["#ffffff", "rgb(1,1,1)"];
+      '#ff "#ffffff,"#FFFFFF" #asdf RGBA(1,1,1), rgba(345,543,3455) rgb(1,1,1) rgba(2,2,3, 0.7#address';
+    const expected = ["#ffffff", "#ffffff", "rgb(1,1,1)"];
     expect(findColors(str)).toEqual(expected);
   });
 
