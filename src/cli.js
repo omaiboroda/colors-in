@@ -12,6 +12,19 @@ const { exclude, include } = argv;
 
 const destination = path.join(process.cwd(), pathArg);
 
+const logBlock = (stats, extension) => {
+  console.log(`${stats.length} colors found in ${extension}:`);
+  stats.forEach(stat => {
+    console.log(
+      " ",
+      chalk`${chalk.bgHex(stat[0])("   ")}`,
+      chalk.green(stat[0]),
+      chalk.yellow(stat[1])
+    );
+  });
+  console.log("---------------------------------");
+};
+
 (pathToDirectory => {
   const walker = walk.walk(pathToDirectory);
   let colors = [];
@@ -51,8 +64,8 @@ const destination = path.join(process.cwd(), pathArg);
   });
 
   walker.on("end", () => {
-    const groupByExtension = colors =>
-      colors.reduce((prev, cur) => {
+    const groupByExtension = stat =>
+      stat.reduce((prev, cur) => {
         prev[cur.extension] = prev[cur.extension]
           ? [...prev[cur.extension], cur]
           : [cur];
@@ -65,16 +78,3 @@ const destination = path.join(process.cwd(), pathArg);
     });
   });
 })(destination);
-
-const logBlock = (stats, extension) => {
-  console.log(`${stats.length} colors found in ${extension}:`);
-  stats.forEach(stat => {
-    console.log(
-      " ",
-      chalk`${chalk.bgHex(stat[0])("   ")}`,
-      chalk.green(stat[0]),
-      chalk.yellow(stat[1])
-    );
-  });
-  console.log("---------------------------------");
-};
