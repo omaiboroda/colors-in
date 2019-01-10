@@ -7,6 +7,15 @@
     "type": "git",
     "url": "https://github.com/omaiboroda/colors-in.git"
   },
+  "keywords": [
+    "extract",
+    "find",
+    "colors",
+    "sources",
+    "files",
+    "hex",
+    "rgb"
+  ],
   "main": "./src/index.js",
   "scripts": {
     "test": "jest",
