@@ -5,6 +5,7 @@ const path = require("path");
 const walk = require("walk");
 const { argv } = require("yargs");
 const chalk = require("chalk");
+const table = require("table");
 const { findColors, sort } = require("./index");
 
 const [pathArg] = argv._;
@@ -26,7 +27,14 @@ const destination = path.join(process.cwd(), pathArg);
     }
     fs.readFile(path.join(root, fileStats.name), "utf8", (err, contents) => {
       const colorsInFile = findColors(contents);
-      colors = [...colors, ...colorsInFile];
+      const extension = fileStats.name.split(".").pop();
+      colors = [
+        ...colors,
+        ...colorsInFile.map(c => ({
+          color: c,
+          extension
+        }))
+      ];
       next();
     });
   });
@@ -37,15 +45,30 @@ const destination = path.join(process.cwd(), pathArg);
   });
 
   walker.on("end", () => {
-    const stats = sort(colors);
-    console.log(`Colors found: ${stats.length}:`);
-    stats.forEach(stat => {
-      console.log(
-        " ",
-        chalk`${chalk.bgHex(stat[0])("   ")}`,
-        chalk.green(stat[0]),
-        chalk.yellow(stat[1])
-      );
+    const groupByExtension = colors =>
+      colors.reduce((prev, cur) => {
+        prev[cur.extension] = prev[cur.extension]
+          ? [...prev[cur.extension], cur]
+          : [cur];
+        return prev;
+      }, {});
+    const byExtension = groupByExtension(colors);
+    Object.keys(byExtension).forEach(extension => {
+      const stats = sort(byExtension[extension].map(byEx => byEx.color));
+      logBlock(stats, extension);
     });
   });
 })(destination);
+
+const logBlock = (stats, extension) => {
+  console.log(`${stats.length} colors in ${extension}:`);
+  stats.forEach(stat => {
+    console.log(
+      " ",
+      chalk`${chalk.bgHex(stat[0])("   ")}`,
+      chalk.green(stat[0]),
+      chalk.yellow(stat[1])
+    );
+  });
+  console.log("------------------------");
+};
