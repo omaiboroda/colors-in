@@ -8,9 +8,9 @@ Extract colors from your source files
 
     $ colors-in src/
 
-You can exclude some files with `--exclude` option:
+You can include/exclude some files with `--exclude/--include` options:
 
-    $ colors-in src/ --exclude snap,svg
+    $ colors-in src/ --exclude "snap|svg" --include js
 
 Example of the output:
 

@@ -5,11 +5,10 @@ const path = require("path");
 const walk = require("walk");
 const { argv } = require("yargs");
 const chalk = require("chalk");
-const table = require("table");
 const { findColors, sort } = require("./index");
 
 const [pathArg] = argv._;
-const { exclude } = argv;
+const { exclude, include } = argv;
 
 const destination = path.join(process.cwd(), pathArg);
 
@@ -19,8 +18,15 @@ const destination = path.join(process.cwd(), pathArg);
 
   walker.on("file", (root, fileStats, next) => {
     if (exclude) {
-      const excludeRegex = new RegExp(exclude.split(",").join("|"));
+      const excludeRegex = new RegExp(exclude);
       if (excludeRegex.test(fileStats.name)) {
+        next();
+        return;
+      }
+    }
+    if (include) {
+      const includeRegex = new RegExp(include);
+      if (!includeRegex.test(fileStats.name)) {
         next();
         return;
       }
@@ -61,7 +67,7 @@ const destination = path.join(process.cwd(), pathArg);
 })(destination);
 
 const logBlock = (stats, extension) => {
-  console.log(`${stats.length} colors in ${extension}:`);
+  console.log(`${stats.length} colors found in ${extension}:`);
   stats.forEach(stat => {
     console.log(
       " ",
@@ -70,5 +76,5 @@ const logBlock = (stats, extension) => {
       chalk.yellow(stat[1])
     );
   });
-  console.log("------------------------");
+  console.log("---------------------------------");
 };
