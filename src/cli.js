@@ -5,24 +5,35 @@ const path = require("path");
 const walk = require("walk");
 const { argv } = require("yargs");
 const chalk = require("chalk");
-const { findColors, sort } = require("./index");
+const { findColors, sort, group } = require("./index");
 
 const [pathArg] = argv._;
 const { exclude, include } = argv;
 
 const destination = path.join(process.cwd(), pathArg);
 
+const reportFiles = files => {
+  const body = files.slice(0, 2).join(", ");
+  let suffix;
+  if (files.length > 3) {
+    suffix = ` and other ${files.length - 2} files`;
+  }
+  return `${chalk.yellow(body)}${suffix || ""}`;
+};
+
 const logBlock = (stats, extension) => {
   console.log(`${stats.length} colors found in ${extension}:`);
   stats.forEach(stat => {
     console.log(
       " ",
-      chalk`${chalk.bgHex(stat[0])("   ")}`,
-      chalk.green(stat[0]),
-      chalk.yellow(stat[1])
+      chalk`${chalk.bgHex(stat.color)("   ")}`,
+      chalk.green(stat.color),
+      chalk.red(stat.count),
+      "usages in",
+      chalk.white(reportFiles(stat.files))
     );
   });
-  console.log("---------------------------------");
+  console.log("========================================");
 };
 
 (pathToDirectory => {
@@ -51,7 +62,8 @@ const logBlock = (stats, extension) => {
         ...colors,
         ...colorsInFile.map(c => ({
           color: c,
-          extension
+          extension,
+          files: [fileStats.name]
         }))
       ];
       next();
@@ -73,7 +85,7 @@ const logBlock = (stats, extension) => {
       }, {});
     const byExtension = groupByExtension(colors);
     Object.keys(byExtension).forEach(extension => {
-      const stats = sort(byExtension[extension].map(byEx => byEx.color));
+      const stats = sort(group(byExtension[extension]));
       logBlock(stats, extension);
     });
   });

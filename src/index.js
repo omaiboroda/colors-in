@@ -20,21 +20,25 @@ const findColors = (str, colorPatterns = patterns) =>
     return [...prev, ...res];
   }, []);
 
-const sort = colors => {
-  // { "#454b54": 1, "#000000": 3, ... }
-  const count = colors.reduce((sum, color) => {
-    color = color.toLowerCase();
-    sum[color] = sum[color] ? sum[color] + 1 : 1;
-    return sum;
-  }, {});
-  // [ '#333', 39 ], [ '#fff', 34 ],
-  const sorted = Object.keys(count)
-    .map(color => [color, count[color]])
-    .sort((a, b) => b[1] - a[1]);
-  return sorted;
-};
+const group = stats =>
+  stats.reduce((sum, stat) => {
+    stat.color = stat.color.toLowerCase();
+    const existing = sum.find(exist => exist.color === stat.color);
+    if (existing) {
+      existing.count += 1;
+      existing.files = existing.files.find(f => f === stat.files[0])
+        ? existing.files
+        : [...existing.files, stat.files[0]];
+    } else {
+      sum.push({ ...stat, count: 1 });
+    }
 
+    return sum;
+  }, []);
+
+const sort = stats => stats.sort((a, b) => b.count - a.count);
 module.exports = {
   findColors,
+  group,
   sort
 };

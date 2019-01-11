@@ -1,4 +1,4 @@
-const { findColors, sort } = require("./index");
+const { findColors, group, sort } = require("./index");
 
 describe("Color extracting behavior", () => {
   it("Can find colors in a string", () => {
@@ -8,15 +8,36 @@ describe("Color extracting behavior", () => {
     expect(findColors(str)).toEqual(expected);
   });
 
-  it("Can sort by usage number", () => {
-    const colors = ["#ffffff", "rgb(1,1,1)", "#ffffff", "#333", "rgb(1,1,2)"];
+  it("Can group by usage number and file", () => {
+    const stats = [
+      { color: "#ffffff", files: ["index.js"] },
+      { color: "rgb(1,1,1)", files: ["index.js"] },
+      { color: "#ffffff", files: ["magic.js"] },
+      { color: "#333", files: ["colors.css"] },
+      { color: "rgb(1,1,2)", files: ["colors.css"] }
+    ];
 
     const expected = [
-      ["#ffffff", 2],
-      ["rgb(1,1,1)", 1],
-      ["#333", 1],
-      ["rgb(1,1,2)", 1]
+      { color: "#ffffff", count: 2, files: ["index.js", "magic.js"] },
+      { color: "rgb(1,1,1)", count: 1, files: ["index.js"] },
+      { color: "#333", count: 1, files: ["colors.css"] },
+      { color: "rgb(1,1,2)", count: 1, files: ["colors.css"] }
     ];
-    expect(sort(colors)).toEqual(expected);
+    expect(group(stats)).toEqual(expected);
+  });
+
+  it("Can sort by usage number", () => {
+    const stats = [
+      { color: "#ffffff", count: 2, files: ["index.js", "magic.js"] },
+      { color: "rgb(1,1,1)", count: 3, files: ["index.js"] },
+      { color: "#333", count: 1, files: ["colors.css"] }
+    ];
+
+    const expected = [
+      { color: "rgb(1,1,1)", count: 3, files: ["index.js"] },
+      { color: "#ffffff", count: 2, files: ["index.js", "magic.js"] },
+      { color: "#333", count: 1, files: ["colors.css"] }
+    ];
+    expect(sort(stats)).toEqual(expected);
   });
 });
