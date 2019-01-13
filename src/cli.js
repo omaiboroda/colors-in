@@ -5,6 +5,7 @@ const path = require("path");
 const walk = require("walk");
 const yargs = require("yargs");
 const chalk = require("chalk");
+const { isBinaryFileSync } = require("isbinaryfile");
 const { findColors, sort, group } = require("./index");
 
 const { argv } = yargs
@@ -71,19 +72,22 @@ const logBlock = (stats, extension) => {
         return;
       }
     }
-    fs.readFile(path.join(root, fileStats.name), "utf8", (err, contents) => {
-      const colorsInFile = findColors(contents);
-      const extension = fileStats.name.split(".").pop();
-      colors = [
-        ...colors,
-        ...colorsInFile.map(c => ({
-          color: c,
-          extension,
-          files: [fileStats.name]
-        }))
-      ];
-      next();
-    });
+    if (!isBinaryFileSync(path.join(root, fileStats.name))) {
+      fs.readFile(path.join(root, fileStats.name), "utf8", (err, contents) => {
+        const colorsInFile = findColors(contents);
+        const extension = fileStats.name.split(".").pop();
+        colors = [
+          ...colors,
+          ...colorsInFile.map(c => ({
+            color: c,
+            extension,
+            files: [fileStats.name]
+          }))
+        ];
+        return next();
+      });
+    }
+    next();
   });
 
   walker.on("errors", (root, nodeStatsArray, next) => {
