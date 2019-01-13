@@ -3,9 +3,25 @@
 const fs = require("fs");
 const path = require("path");
 const walk = require("walk");
-const { argv } = require("yargs");
+const yargs = require("yargs");
 const chalk = require("chalk");
 const { findColors, sort, group } = require("./index");
+
+const { argv } = yargs
+  .usage("Usage: colors-in <folder> [options]")
+  .option("i", {
+    alias: "include",
+    requiresArg: true,
+    describe: "RegExp to include files",
+    type: "string"
+  })
+  .option("e", {
+    alias: "exclude",
+    requiresArg: true,
+    describe: "RegExp to exclude files",
+    type: "string"
+  })
+  .example("colors-in src/ --exclude 'snap|svg' --include js");
 
 const [pathArg] = argv._;
 const { exclude, include } = argv;
