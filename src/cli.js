@@ -22,10 +22,15 @@ const { argv } = yargs
     describe: "RegExp to exclude files",
     type: "string"
   })
+  .option("f", {
+    alias: "flat",
+    describe: "Disable grouping by file extension",
+    type: "boolean"
+  })
   .example("colors-in src/ --exclude 'snap|svg' --include js");
 
 const [pathArg] = argv._;
-const { exclude, include } = argv;
+const { exclude, include, flat } = argv;
 
 const destination = path.join(process.cwd(), pathArg);
 
@@ -52,6 +57,18 @@ const logBlock = (stats, extension) => {
   });
   console.log("========================================");
 };
+
+const groupByExtension = stat =>
+  stat.reduce((prev, cur) => {
+    prev[cur.extension] = prev[cur.extension]
+      ? [...prev[cur.extension], cur]
+      : [cur];
+    return prev;
+  }, {});
+
+const groupFlat = stat => ({
+  [destination]: stat
+});
 
 (pathToDirectory => {
   const walker = walk.walk(pathToDirectory);
@@ -86,8 +103,9 @@ const logBlock = (stats, extension) => {
         ];
         return next();
       });
+    } else {
+      next();
     }
-    next();
   });
 
   walker.on("errors", (root, nodeStatsArray, next) => {
@@ -96,16 +114,10 @@ const logBlock = (stats, extension) => {
   });
 
   walker.on("end", () => {
-    const groupByExtension = stat =>
-      stat.reduce((prev, cur) => {
-        prev[cur.extension] = prev[cur.extension]
-          ? [...prev[cur.extension], cur]
-          : [cur];
-        return prev;
-      }, {});
-    const byExtension = groupByExtension(colors);
-    Object.keys(byExtension).forEach(extension => {
-      const stats = sort(group(byExtension[extension]));
+    const groupedColors = flat ? groupFlat(colors) : groupByExtension(colors);
+
+    Object.keys(groupedColors).forEach(extension => {
+      const stats = sort(group(groupedColors[extension]));
       logBlock(stats, extension);
     });
   });
