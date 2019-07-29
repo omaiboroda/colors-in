@@ -1,7 +1,7 @@
 {
   "name": "colors-in",
   "author": "Oles Maiboroda",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "Extract colors from your sources",
   "repository": {
     "type": "git",
